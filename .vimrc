@@ -169,17 +169,17 @@ au BufRead,BufNewFile *.bats set filetype=sh
 au BufRead,BufNewFile *.ks let g:is_bash=1
 au BufRead,BufNewFile *.ks set filetype=sh
 
-"execute pathogen#infect()
-"
-"set t_Co=256
-"
-"if &diff
-"    colorscheme bvemu
-"else
-"    " colorscheme blazer
-"    colorscheme blacklight
-"    set nu
-"endif
+execute pathogen#infect()
+
+set t_Co=256
+
+if &diff
+    colorscheme bvemu
+else
+    " colorscheme blazer
+    colorscheme blacklight
+    set nu
+endif
 
 " Break on word boundaries
 set linebreak
