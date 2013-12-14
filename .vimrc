@@ -176,7 +176,6 @@ set t_Co=256
 if &diff
     colorscheme bvemu
 else
-    " colorscheme blazer
     colorscheme blacklight
     set nu
 endif
@@ -185,3 +184,5 @@ endif
 set linebreak
 
 let g:ctrlp_map = '<c-p>'
+
+nnoremap <Leader>u :GundoToggle<CR>
