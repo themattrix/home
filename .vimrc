@@ -158,7 +158,11 @@ nnoremap <C-L> :nohl<CR><C-L>
 "------------------------------------------------------------
 "
 
+" Assume dark console background
 set bg=dark
+
+" Break on word boundaries
+set linebreak
 
 au BufRead,BufNewFile *.sh let g:is_bash=1
 au BufRead,BufNewFile *.sh set filetype=sh
@@ -176,12 +180,11 @@ set t_Co=256
 if &diff
     colorscheme bvemu
 else
-    colorscheme blacklight
+    let g:molokai_original=1
+    let g:rehash256=1
+    colorscheme molokai
     set nu
 endif
-
-" Break on word boundaries
-set linebreak
 
 let g:ctrlp_map = '<c-p>'
 
