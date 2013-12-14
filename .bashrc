@@ -48,6 +48,8 @@ function define_colors() {
 function __define_prompt() {
     local status="$?"
     local git_branch
+    local git_nothing_to_commit
+    local git_branch_out_of_sync
 
     if [ "${status}" -eq 0 ]; then
         local status_color="${txtgrn}"
@@ -57,6 +59,16 @@ function __define_prompt() {
 
     if which git &> /dev/null; then
         git_branch=$(git rev-parse --abbrev-ref HEAD 2> /dev/null)
+
+        if [ -n "${git_branch}" ]; then
+            local git_status=$(git status)
+
+            grep -sqFx "nothing to commit, working directory clean" <<< "${git_status}"
+            git_nothing_to_commit=$?
+
+            grep -sq "^# Your branch is" <<< "${git_status}"
+            git_branch_out_of_sync=$?
+        fi
     fi
 
     if [ "$(id -u)" -eq 0 ]; then
@@ -78,7 +90,15 @@ function __define_prompt() {
         echo -n " ${bldblk}[${txtrst}${txtpur}\w${txtrst}${bldblk}]${txtrst}"
 
         if [ -n "${git_branch}" ]; then
-            echo -n " ${bldblk}(git: ${txtrst}${txtgrn}${git_branch}${txtrst}${bldblk})${txtrst}"
+            echo -n " ${bldblk}(git: ${txtrst}${txtgrn}${git_branch}${txtrst}"
+
+            if [ "${git_nothing_to_commit}" -eq 1 ]; then
+                echo -n " ${bldblk}[+]${txtrst}"
+            elif [ "${git_branch_out_of_sync}" -eq 0 ]; then
+                echo -n " ${bldblk}[^]${txtrst}"
+            fi
+
+            echo -n "${bldblk})${txtrst}"
         fi
 
         echo
