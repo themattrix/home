@@ -175,6 +175,7 @@ au BufRead,BufNewFile *.ks set filetype=sh
 
 execute pathogen#infect()
 
+" Enable 256-color mode
 set t_Co=256
 
 if &diff
