@@ -50,6 +50,7 @@ function __define_prompt() {
     local git_branch
     local git_nothing_to_commit
     local git_branch_out_of_sync
+    local git_unstaged_changes
 
     if [ "${status}" -eq 0 ]; then
         local status_color="${txtgrn}"
@@ -65,6 +66,11 @@ function __define_prompt() {
 
             grep -sqFx "nothing to commit, working directory clean" <<< "${git_status}"
             git_nothing_to_commit=$?
+
+            if [ ${git_nothing_to_commit} -eq 1 ]; then
+                grep -sqFx "# Changes not staged for commit:" <<< "${git_status}"
+                git_unstaged_changes=$?
+            fi
 
             grep -sq "^# Your branch is" <<< "${git_status}"
             git_branch_out_of_sync=$?
@@ -90,15 +96,18 @@ function __define_prompt() {
         echo -n " ${bldblk}[${txtrst}${txtpur}\w${txtrst}${bldblk}]${txtrst}"
 
         if [ -n "${git_branch}" ]; then
-            echo -n " ${bldblk}(git: ${txtrst}${txtgrn}${git_branch}${txtrst}"
+            local icon
 
-            if [ "${git_nothing_to_commit}" -eq 1 ]; then
-                echo -n " ${bldblk}[+]${txtrst}"
-            elif [ "${git_branch_out_of_sync}" -eq 0 ]; then
-                echo -n " ${bldblk}[^]${txtrst}"
+            if [ ${git_nothing_to_commit} -eq 1 ]; then
+                [ ${git_unstaged_changes} -eq 0 ] \
+                && local plus_color="${txtred}" \
+                || local plus_color="${txtgrn}"
+                icon=" ${bldblk}[${txtrst}${plus_color}+${txtrst}${bldblk}]${txtrst}"
+            elif [ ${git_branch_out_of_sync} -eq 0 ]; then
+                icon=" ${bldblk}[^]${txtrst}"
             fi
 
-            echo -n "${bldblk})${txtrst}"
+            echo -n " ${bldblk}(git: ${txtrst}${txtgrn}${git_branch}${txtrst}${icon}${bldblk})${txtrst}"
         fi
 
         echo
