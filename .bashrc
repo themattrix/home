@@ -51,6 +51,7 @@ function __define_prompt() {
     local git_nothing_to_commit
     local git_branch_out_of_sync
     local git_unstaged_changes
+    local git_untracked_files
 
     if [ "${status}" -eq 0 ]; then
         local status_color="${txtgrn}"
@@ -70,6 +71,11 @@ function __define_prompt() {
             if [ ${git_nothing_to_commit} -eq 1 ]; then
                 grep -sqFx "# Changes not staged for commit:" <<< "${git_status}"
                 git_unstaged_changes=$?
+
+                if [ "${git_unstaged_changes}" -eq 1 ]; then
+                    grep -sqFx "# Untracked files:" <<< "${git_status}"
+                    git_untracked_files=$?
+                fi
             fi
 
             grep -sq "^# Your branch is" <<< "${git_status}"
@@ -99,9 +105,17 @@ function __define_prompt() {
             local icon
 
             if [ ${git_nothing_to_commit} -eq 1 ]; then
-                [ ${git_unstaged_changes} -eq 0 ] \
-                && local plus_color="${txtred}" \
-                || local plus_color="${txtgrn}"
+                # There is something to commit...
+                if [ ${git_unstaged_changes} -eq 0 ]; then
+                    # Unstaged changes exist
+                    local plus_color="${txtred}"
+                elif [ ${git_untracked_files} -eq 0 ]; then
+                    # No unstaged changes exist, but untracked files exist
+                    local plus_color="${txtylw}"
+                else
+                    # No unstaged changes or untracked files exist
+                    local plus_color="${txtgrn}"
+                fi
                 icon=" ${bldblk}[${txtrst}${plus_color}+${txtrst}${bldblk}]${txtrst}"
             elif [ ${git_branch_out_of_sync} -eq 0 ]; then
                 icon=" ${bldblk}[^]${txtrst}"
