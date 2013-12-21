@@ -45,88 +45,111 @@ function define_colors() {
     txtrst='\e[0m'    # Text Reset
 }
 
+function __should_reload_bashrc() {
+    local actual_bashrc_timestamp=$(stat -c %Y -- "${BASH_SOURCE}")
+
+    if [ -n "${RECORDED_BASHRC_TIMESTAMP}" ]; then
+        if [ "${actual_bashrc_timestamp}" -eq "${RECORDED_BASHRC_TIMESTAMP}" ]; then
+            return 1
+        fi
+    fi
+
+    RECORDED_BASHRC_TIMESTAMP=${actual_bashrc_timestamp}
+    return 0
+}
+
+function __reload_bashrc() {
+    source "${BASH_SOURCE}"
+}
+
 function __define_prompt() {
-    local status="$?"
-    local git_branch
-    local git_nothing_to_commit
-    local git_branch_out_of_sync
-    local git_unstaged_changes
-    local git_untracked_files
+    local status="${1:-$?}"
 
-    if [ "${status}" -eq 0 ]; then
-        local status_color="${txtgrn}"
+    if __should_reload_bashrc; then
+        __reload_bashrc
+        __define_prompt "${status}"
     else
-        local status_color="${txtred}"
-    fi
+        local git_branch
+        local git_nothing_to_commit
+        local git_branch_out_of_sync
+        local git_unstaged_changes
+        local git_untracked_files
 
-    if which git &> /dev/null; then
-        git_branch=$(git rev-parse --abbrev-ref HEAD 2> /dev/null)
-
-        if [ -n "${git_branch}" ]; then
-            local git_status=$(git status)
-
-            grep -sqFx "nothing to commit, working directory clean" <<< "${git_status}"
-            git_nothing_to_commit=$?
-
-            if [ ${git_nothing_to_commit} -eq 1 ]; then
-                grep -sqFx "# Changes not staged for commit:" <<< "${git_status}"
-                git_unstaged_changes=$?
-
-                if [ "${git_unstaged_changes}" -eq 1 ]; then
-                    grep -sqFx "# Untracked files:" <<< "${git_status}"
-                    git_untracked_files=$?
-                fi
-            fi
-
-            grep -sq "^# Your branch is" <<< "${git_status}"
-            git_branch_out_of_sync=$?
-        fi
-    fi
-
-    if [ "$(id -u)" -eq 0 ]; then
-        local user_color="${txtred}"
-        local user_prompt="#"
-    else
-        local user_color="${txtcyn}"
-        local user_prompt="$"
-    fi
-
-    PS1=$(
-        echo -n "${bldblk}"
-        printf  "%*s" "$((${COLUMNS} - ${#status} - 2))" "" | sed 's/ /_/g'
-        echo -n "${txtrst}${bldblk}[${txtrst}${status_color}${status}${txtrst}${bldblk}]${txtrst}"
-        echo
-        echo -n "${user_color}\u${txtrst}"
-        echo -n "${bldblk}@${txtrst}"
-        echo -n "${txtylw}\h${txtrst}"
-        echo -n " ${bldblk}[${txtrst}${txtpur}\w${txtrst}${bldblk}]${txtrst}"
-
-        if [ -n "${git_branch}" ]; then
-            local icon
-
-            if [ ${git_nothing_to_commit} -eq 1 ]; then
-                # There is something to commit...
-                if [ ${git_unstaged_changes} -eq 0 ]; then
-                    # Unstaged changes exist
-                    local plus_color="${txtred}"
-                elif [ ${git_untracked_files} -eq 0 ]; then
-                    # No unstaged changes exist, but untracked files exist
-                    local plus_color="${txtylw}"
-                else
-                    # No unstaged changes or untracked files exist
-                    local plus_color="${txtgrn}"
-                fi
-                icon=" ${bldblk}[${txtrst}${plus_color}+${txtrst}${bldblk}]${txtrst}"
-            elif [ ${git_branch_out_of_sync} -eq 0 ]; then
-                icon=" ${bldblk}[^]${txtrst}"
-            fi
-
-            echo -n " ${bldblk}(git: ${txtrst}${txtgrn}${git_branch}${txtrst}${icon}${bldblk})${txtrst}"
+        if [ "${status}" -eq 0 ]; then
+            local status_color="${txtgrn}"
+        else
+            local status_color="${txtred}"
         fi
 
-        echo
-        echo    "${user_prompt} "
-    )
+        if which git &> /dev/null; then
+            git_branch=$(git rev-parse --abbrev-ref HEAD 2> /dev/null)
+
+            if [ -n "${git_branch}" ]; then
+                local git_status=$(git status)
+
+                grep -sqFx "nothing to commit, working directory clean" <<< "${git_status}"
+                git_nothing_to_commit=$?
+
+                if [ ${git_nothing_to_commit} -eq 1 ]; then
+                    grep -sqFx "# Changes not staged for commit:" <<< "${git_status}"
+                    git_unstaged_changes=$?
+
+                    if [ "${git_unstaged_changes}" -eq 1 ]; then
+                        grep -sqFx "# Untracked files:" <<< "${git_status}"
+                        git_untracked_files=$?
+                    fi
+                fi
+
+                grep -sq "^# Your branch is" <<< "${git_status}"
+                git_branch_out_of_sync=$?
+            fi
+        fi
+
+        if [ "$(id -u)" -eq 0 ]; then
+            local user_color="${txtred}"
+            local user_prompt="#"
+        else
+            local user_color="${txtcyn}"
+            local user_prompt="$"
+        fi
+
+        PS1=$(
+            echo -n "${bldblk}"
+            printf  "%*s" "$((${COLUMNS} - ${#status} - 2))" "" | sed 's/ /_/g'
+            echo -n "${txtrst}${bldblk}[${txtrst}${status_color}${status}${txtrst}${bldblk}]${txtrst}"
+            echo
+            echo -n "${user_color}\u${txtrst}"
+            echo -n "${bldblk}@${txtrst}"
+            echo -n "${txtylw}\h${txtrst}"
+            echo -n " ${bldblk}[${txtrst}${txtpur}\w${txtrst}${bldblk}]${txtrst}"
+
+            if [ -n "${git_branch}" ]; then
+                local icon
+
+                if [ ${git_nothing_to_commit} -eq 1 ]; then
+                    # There is something to commit...
+                    if [ ${git_unstaged_changes} -eq 0 ]; then
+                        # Unstaged changes exist
+                        local plus_color="${txtred}"
+                    elif [ ${git_untracked_files} -eq 0 ]; then
+                        # No unstaged changes exist, but untracked files exist
+                        local plus_color="${txtylw}"
+                    else
+                        # No unstaged changes or untracked files exist
+                        local plus_color="${txtgrn}"
+                    fi
+                    icon=" ${bldblk}[${txtrst}${plus_color}+${txtrst}${bldblk}]${txtrst}"
+                elif [ ${git_branch_out_of_sync} -eq 0 ]; then
+                    icon=" ${bldblk}[^]${txtrst}"
+                fi
+
+                echo -n " ${bldblk}(git: ${txtrst}${txtgrn}${git_branch}${txtrst}${icon}${bldblk})${txtrst}"
+            fi
+
+            echo
+            echo "${user_prompt} "
+        )
+    fi
 }
 
 # don't put duplicate lines or lines starting with space in the history.
