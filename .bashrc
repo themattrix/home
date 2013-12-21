@@ -234,3 +234,9 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
+
+# Launch tmux automatically in new sessions
+# -> http://stackoverflow.com/a/11069117/27925
+if [[ ! $TERM =~ screen ]]; then
+    which tmux &> /dev/null && exec tmux
+fi
