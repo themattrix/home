@@ -46,7 +46,7 @@ function define_colors() {
 }
 
 function __should_reload_bashrc() {
-    local actual_bashrc_timestamp=$(stat -c %Y -- "${BASH_SOURCE}")
+    local actual_bashrc_timestamp=$(stat -c %Y -- "${HOME}/.bashrc")
 
     if [ -n "${RECORDED_BASHRC_TIMESTAMP}" ]; then
         if [ "${actual_bashrc_timestamp}" -eq "${RECORDED_BASHRC_TIMESTAMP}" ]; then
@@ -59,7 +59,7 @@ function __should_reload_bashrc() {
 }
 
 function __reload_bashrc() {
-    source "${BASH_SOURCE}"
+    source "${HOME}/.bashrc"
 }
 
 function __define_prompt() {
