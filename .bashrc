@@ -245,5 +245,7 @@ fi
 # Launch tmux automatically in new sessions
 # -> http://stackoverflow.com/a/11069117/27925
 if [[ ! $TERM =~ screen ]]; then
-    which tmux &> /dev/null && exec tmux
+    if which tmux &> /dev/null; then
+        exec tmux
+    fi
 fi
