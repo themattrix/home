@@ -91,16 +91,16 @@ function __define_prompt() {
                 git_nothing_to_commit=$?
 
                 if [ ${git_nothing_to_commit} -eq 1 ]; then
-                    grep -sqFx "# Changes not staged for commit:" <<< "${git_status}"
+                    grep -Esq "^(# )?Changes not staged for commit:$" <<< "${git_status}"
                     git_unstaged_changes=$?
 
                     if [ "${git_unstaged_changes}" -eq 1 ]; then
-                        grep -sqFx "# Untracked files:" <<< "${git_status}"
+                        grep -Esq "^(# )?Untracked files:$" <<< "${git_status}"
                         git_untracked_files=$?
                     fi
                 fi
 
-                grep -sq "^# Your branch is" <<< "${git_status}"
+                grep -Esq "^(# )?Your branch is (ahead|behind)" <<< "${git_status}"
                 git_branch_out_of_sync=$?
             fi
         fi
@@ -245,7 +245,7 @@ fi
 # Launch tmux automatically in new sessions
 # -> http://stackoverflow.com/a/11069117/27925
 if [[ ! $TERM =~ screen ]]; then
-    if which tmux &> /dev/null; then
+    if /usr/bin/which tmux &> /dev/null; then
         exec tmux
     fi
 fi
