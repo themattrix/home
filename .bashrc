@@ -246,6 +246,7 @@ fi
 # -> http://stackoverflow.com/a/11069117/27925
 if [[ ! $TERM =~ screen ]]; then
     if /usr/bin/which tmux &> /dev/null; then
+        export TERM=screen-256color-bce
         exec tmux
     fi
 fi
