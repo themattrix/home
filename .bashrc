@@ -81,6 +81,16 @@ function __define_prompt() {
             local status_color="${txtred}"
         fi
 
+        if [[ $TERM =~ screen ]]; then
+            if which tmux &> /dev/null; then
+                if [ "${PWD}" == "${HOME}" ]; then
+                    tmux rename-window "~"
+                else
+                    tmux rename-window "$(basename "${PWD}")"
+                fi
+            fi
+        fi
+
         if which git &> /dev/null; then
             git_branch=$(git rev-parse --abbrev-ref HEAD 2> /dev/null)
 
