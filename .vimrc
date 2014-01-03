@@ -190,3 +190,12 @@ endif
 let g:ctrlp_map = '<c-p>'
 
 nnoremap <Leader>u :GundoToggle<CR>
+
+" Handle tmux $TERM quirks in vim
+" -> http://stackoverflow.com/a/9674158/27925
+if $TERM =~ '^screen-256color'
+    map <Esc>OH <Home>
+    map! <Esc>OH <Home>
+    map <Esc>OF <End>
+    map! <Esc>OF <End>
+endif
