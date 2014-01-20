@@ -257,8 +257,12 @@ fi
 if [[ ! $TERM =~ screen ]]; then
     if /usr/bin/which tmux &> /dev/null; then
         export TERM=screen-256color-bce
-        if ! exec tmux attach; then
+
+        if tmux list-sessions &> /dev/null; then
+            exec tmux attach
+        else
             exec tmux
         fi
+
     fi
 fi
