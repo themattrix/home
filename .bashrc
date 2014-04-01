@@ -26,7 +26,7 @@ function define_colors() {
     bldpur='\e[1;35m' # Purple
     bldcyn='\e[1;36m' # Cyan
     bldwht='\e[1;37m' # White
-    unkblk='\e[4;30m' # Black - Underline
+    undblk='\e[4;30m' # Black - Underline
     undred='\e[4;31m' # Red
     undgrn='\e[4;32m' # Green
     undylw='\e[4;33m' # Yellow
@@ -154,6 +154,11 @@ function __define_prompt() {
                 fi
 
                 echo -n " ${bldblk}(git: ${txtrst}${txtgrn}${git_branch}${txtrst}${icon}${bldblk})${txtrst}"
+            fi
+
+            if [ -n "${VIRTUAL_ENV}" ]; then
+                # Looks like we are in a Python virtual environment
+                echo -n " ${bldblk}(env: ${txtrst}${txtgrn}${VIRTUAL_ENV/#${HOME}/~}${txtrst}${bldblk})${txtrst}"
             fi
 
             echo
