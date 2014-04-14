@@ -74,6 +74,7 @@ function __define_prompt() {
         local git_branch_out_of_sync
         local git_unstaged_changes
         local git_untracked_files
+        local git_branch_tracking
 
         if [ "${status}" -eq 0 ]; then
             local status_color="${txtgrn}"
@@ -112,6 +113,9 @@ function __define_prompt() {
 
                 grep -Esq "^(# )?Your branch is (ahead|behind)" <<< "${git_status}"
                 git_branch_out_of_sync=$?
+
+                git rev-parse --abbrev-ref --symbolic-full-name @{u} &> /dev/null
+                git_branch_tracking=$?
             fi
         fi
 
@@ -151,6 +155,8 @@ function __define_prompt() {
                     icon=" ${bldblk}[${txtrst}${plus_color}+${txtrst}${bldblk}]${txtrst}"
                 elif [ ${git_branch_out_of_sync} -eq 0 ]; then
                     icon=" ${bldblk}[^]${txtrst}"
+                elif [ ${git_branch_tracking} -ne 0 ]; then
+                    icon=" ${bldblk}[#]${txtrst}"
                 fi
 
                 echo -n " ${bldblk}(git: ${txtrst}${txtgrn}${git_branch}${txtrst}${icon}${bldblk})${txtrst}"
