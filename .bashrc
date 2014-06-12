@@ -106,7 +106,7 @@ function __define_prompt() {
                     git_unstaged_changes=$?
 
                     if [ "${git_unstaged_changes}" -eq 1 ]; then
-                        grep -Esq "^(# )?Untracked files:$" <<< "${git_status}"
+                        grep -Esq "^(# )?(Untracked files|Unmerged paths):$" <<< "${git_status}"
                         git_untracked_files=$?
                     fi
                 fi
