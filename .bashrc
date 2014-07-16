@@ -96,7 +96,9 @@ function __define_prompt() {
             git_branch=$(git rev-parse --abbrev-ref HEAD 2> /dev/null)
 
             if [ -n "${git_branch}" ]; then
-                local git_status=$(git status)
+                git_root=$(cd "$(git rev-parse --git-dir)/.." && pwd)
+
+                local git_status=$(cd "${git_root}" && git status 2> /dev/null)
 
                 grep -sqFx "nothing to commit, working directory clean" <<< "${git_status}"
                 git_nothing_to_commit=$?
@@ -159,7 +161,7 @@ function __define_prompt() {
                     icon=" ${bldblk}[#]${txtrst}"
                 fi
 
-                echo -n " ${bldblk}(git: ${txtrst}${txtgrn}${git_branch}${txtrst}${icon}${bldblk})${txtrst}"
+                echo -n " ${bldblk}(git ${git_root/#${HOME}/~}: ${txtrst}${txtgrn}${git_branch}${txtrst}${icon}${bldblk})${txtrst}"
             fi
 
             if [ -n "${VIRTUAL_ENV}" ]; then
