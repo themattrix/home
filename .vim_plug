@@ -1,0 +1,35 @@
+call plug#begin('~/.vim/plugged')
+
+" On-demand loading
+Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
+
+Plug 'xolox/vim-misc'
+Plug 'ervandew/supertab'
+Plug 'junegunn/vim-easy-align'
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-sensible'
+Plug 'christoomey/vim-tmux-navigator'
+Plug 'kien/ctrlp.vim'
+Plug 'Lokaltog/vim-easymotion'
+Plug 'sjl/gundo.vim'
+Plug 'ciaranm/detectindent'
+Plug 'tomtom/tcomment_vim'
+
+" Colors
+Plug 'flazz/vim-colorschemes'
+Plug 'vim-scripts/vim-colorscheme-switcher'
+Plug 'tomasr/molokai'
+
+" Git tools
+Plug 'tpope/vim-fugitive'
+
+" Yaml tools
+Plug 'stephpy/vim-yaml'
+
+" Puppet tools
+Plug 'rodjek/vim-puppet'
+
+" Docker tools
+Plug 'ekalinin/Dockerfile.vim'
+
+call plug#end()
