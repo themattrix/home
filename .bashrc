@@ -87,7 +87,7 @@ function __define_prompt() {
                 if [ "${PWD}" == "${HOME}" ]; then
                     tmux rename-window "~"
                 else
-                    tmux rename-window "$(basename "${PWD}")"
+                    tmux rename-window "${PWD##*/}"
                 fi
             fi
         fi
@@ -265,6 +265,22 @@ if ! shopt -oq posix; then
   elif [ -f /etc/bash_completion ]; then
     . /etc/bash_completion
   fi
+fi
+
+shopt -s histappend              # append new history items to .bash_history
+export HISTCONTROL=ignorespace   # leading space hides commands from history
+export HISTFILESIZE=10000        # increase history file size (default is 500)
+export HISTSIZE=${HISTFILESIZE}  # increase history size (default is 500)
+export PROMPT_COMMAND="history -a; history -n; ${PROMPT_COMMAND}"   # mem/file sync
+
+if which hh &> /dev/null; then
+    # get more colors
+    export HH_CONFIG=hicolor
+
+    # if this is interactive shell, then bind hh to Ctrl-r
+    if [[ $- =~ .*i.* ]]; then
+        bind '"\C-r": "\C-a hh \C-j"'
+    fi
 fi
 
 # Launch tmux automatically in new sessions
