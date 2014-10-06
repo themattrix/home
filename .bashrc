@@ -65,6 +65,9 @@ function __reload_bashrc() {
 function __define_prompt() {
     local status="${1:-$?}"
 
+    history -a &> /dev/null || true
+    history -n &> /dev/null || true
+
     if __should_reload_bashrc; then
         __reload_bashrc
         __define_prompt "${status}"
@@ -175,10 +178,6 @@ function __define_prompt() {
     fi
 }
 
-# don't put duplicate lines or lines starting with space in the history.
-# See bash(1) for more options
-export HISTCONTROL=ignoreboth
-
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
@@ -264,7 +263,6 @@ shopt -s histappend              # append new history items to .bash_history
 export HISTCONTROL=ignorespace   # leading space hides commands from history
 export HISTFILESIZE=10000        # increase history file size (default is 500)
 export HISTSIZE=${HISTFILESIZE}  # increase history size (default is 500)
-export PROMPT_COMMAND="history -a; history -n; ${PROMPT_COMMAND}"   # mem/file sync
 
 if which hh &> /dev/null; then
     # get more colors
