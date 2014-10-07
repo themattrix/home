@@ -173,6 +173,11 @@ au BufRead,BufNewFile *.bats set filetype=sh
 au BufRead,BufNewFile *.ks let g:is_bash=1
 au BufRead,BufNewFile *.ks set filetype=sh
 
+augroup vagrant
+    au!
+    au BufRead,BufNewFile Vagrantfile set filetype=ruby
+augroup END
+
 source ~/.vim_plug
 
 " Enable 256-color mode
