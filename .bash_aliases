@@ -19,3 +19,5 @@ alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo
 alias c='clear'
 alias cls='clear; ls'
 alias tmux='TERM=screen-256color-bce tmux'
+
+alias ccat='pygmentize -g -O bg=dark'
