@@ -178,7 +178,7 @@ augroup vagrant
     au BufRead,BufNewFile Vagrantfile set filetype=ruby
 augroup END
 
-execute pathogen#infect()
+source ~/.vim_plug
 
 " Enable 256-color mode
 set t_Co=256
