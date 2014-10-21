@@ -204,3 +204,5 @@ if $TERM =~ '^screen-256color'
     map <Esc>OF <End>
     map! <Esc>OF <End>
 endif
+
+au BufRead * normal zR

@@ -14,6 +14,9 @@ Plug 'sjl/gundo.vim'
 Plug 'ciaranm/detectindent'
 Plug 'tomtom/tcomment_vim'
 Plug 'bling/vim-airline'
+Plug 'klen/python-mode'
+Plug 'terryma/vim-multiple-cursors'
+Plug 'airblade/vim-gitgutter'
 
 " Colors
 Plug 'flazz/vim-colorschemes'
