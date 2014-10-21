@@ -205,4 +205,8 @@ if $TERM =~ '^screen-256color'
     map! <Esc>OF <End>
 endif
 
+" Expand all folds
 au BufRead * normal zR
+
+" Always show git gutter column
+let g:gitgutter_sign_column_always = 1
