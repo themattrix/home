@@ -76,13 +76,6 @@ function __define_prompt() {
         __reload_bashrc
         __define_prompt "${status}"
     else
-        local git_branch
-        local git_nothing_to_commit
-        local git_branch_out_of_sync
-        local git_unstaged_changes
-        local git_untracked_files
-        local git_branch_tracking
-
         if [ "${status}" -eq 0 ]; then
             local status_color="${txtgrn}"
         else
@@ -100,31 +93,35 @@ function __define_prompt() {
         fi
 
         if which git &> /dev/null; then
-            git_branch=$(git rev-parse --abbrev-ref HEAD 2> /dev/null)
+            __GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD 2> /dev/null)
 
-            if [ -n "${git_branch}" ]; then
-                git_root=$(cd "$(git rev-parse --git-dir)/.." && pwd)
+            if [ -n "${__GIT_BRANCH}" ]; then
+                __GIT_ROOT=$(cd "$(git rev-parse --git-dir)/.." && pwd)
+                __GIT_STATUS=$(cd "${__GIT_ROOT}" && git status 2> /dev/null)
 
-                local git_status=$(cd "${git_root}" && git status 2> /dev/null)
+                if [[ "${__GIT_ROOT}" != "${__GIT_ROOT_PREV}" || "${__GIT_STATUS}" != "${__GIT_STATUS_PREV}" ]]; then
+                    grep -sqFx "nothing to commit, working directory clean" <<< "${__GIT_STATUS}"
+                    __GIT_NOTHING_TO_COMMIT=$?
 
-                grep -sqFx "nothing to commit, working directory clean" <<< "${git_status}"
-                git_nothing_to_commit=$?
+                    if [ ${__GIT_NOTHING_TO_COMMIT} -eq 1 ]; then
+                        grep -Esq "^(# )?Changes not staged for commit:$" <<< "${__GIT_STATUS}"
+                        __GIT_UNSTAGED_CHANGES=$?
 
-                if [ ${git_nothing_to_commit} -eq 1 ]; then
-                    grep -Esq "^(# )?Changes not staged for commit:$" <<< "${git_status}"
-                    git_unstaged_changes=$?
-
-                    if [ "${git_unstaged_changes}" -eq 1 ]; then
-                        grep -Esq "^(# )?(Untracked files|Unmerged paths):$" <<< "${git_status}"
-                        git_untracked_files=$?
+                        if [ "${__GIT_UNSTAGED_CHANGES}" -eq 1 ]; then
+                            grep -Esq "^(# )?(Untracked files|Unmerged paths):$" <<< "${__GIT_STATUS}"
+                            __GIT_UNTRACKED_FILES=$?
+                        fi
                     fi
+
+                    grep -Esq "^(# )?Your branch is (ahead|behind)" <<< "${__GIT_STATUS}"
+                    __GIT_BRANCH_OUT_OF_SYNC=$?
+
+                    git rev-parse --abbrev-ref --symbolic-full-name @{u} &> /dev/null
+                    __GIT_BRANCH_TRACKING=$?
+
+                    __GIT_ROOT_PREV=${__GIT_ROOT}
+                    __GIT_STATUS_PREV=${__GIT_STATUS}
                 fi
-
-                grep -Esq "^(# )?Your branch is (ahead|behind)" <<< "${git_status}"
-                git_branch_out_of_sync=$?
-
-                git rev-parse --abbrev-ref --symbolic-full-name @{u} &> /dev/null
-                git_branch_tracking=$?
             fi
         fi
 
@@ -146,15 +143,15 @@ function __define_prompt() {
             echo -n "${txtylw}\h${txtrst}"
             echo -n " ${bldblk}[${txtrst}${txtpur}\w${txtrst}${bldblk}]${txtrst}"
 
-            if [ -n "${git_branch}" ]; then
+            if [ -n "${__GIT_BRANCH}" ]; then
                 local icon
 
-                if [ ${git_nothing_to_commit} -eq 1 ]; then
+                if [ ${__GIT_NOTHING_TO_COMMIT} -eq 1 ]; then
                     # There is something to commit...
-                    if [ ${git_unstaged_changes} -eq 0 ]; then
+                    if [ ${__GIT_UNSTAGED_CHANGES} -eq 0 ]; then
                         # Unstaged changes exist
                         local plus_color="${txtred}"
-                    elif [ ${git_untracked_files} -eq 0 ]; then
+                    elif [ ${__GIT_UNTRACKED_FILES} -eq 0 ]; then
                         # No unstaged changes exist, but untracked files exist
                         local plus_color="${txtylw}"
                     else
@@ -162,18 +159,18 @@ function __define_prompt() {
                         local plus_color="${txtgrn}"
                     fi
                     icon=" ${bldblk}[${txtrst}${plus_color}+${txtrst}${bldblk}]${txtrst}"
-                elif [ ${git_branch_out_of_sync} -eq 0 ]; then
+                elif [ ${__GIT_BRANCH_OUT_OF_SYNC} -eq 0 ]; then
                     icon=" ${bldblk}[^]${txtrst}"
-                elif [ ${git_branch_tracking} -ne 0 ]; then
+                elif [ ${__GIT_BRANCH_TRACKING} -ne 0 ]; then
                     icon=" ${bldblk}[#]${txtrst}"
                 fi
 
-                echo -n " ${bldblk}(git ${git_root/#${HOME}/~}: ${txtrst}${txtgrn}${git_branch}${txtrst}${icon}${bldblk})${txtrst}"
+                echo -n " ${bldblk}(git ${__GIT_ROOT/#${HOME}/~}: ${txtrst}${txtgrn}${__GIT_BRANCH}${txtrst}${icon}${bldblk})${txtrst}"
             fi
 
             if [ -n "${VIRTUAL_ENV}" ]; then
                 # Looks like we are in a Python virtual environment
-                echo -n " ${bldblk}(env: ${txtrst}${txtgrn}${VIRTUAL_ENV/#${HOME}/~}${txtrst}${bldblk})${txtrst}"
+                echo -n " ${bldblk}(py: ${txtrst}${txtgrn}${VIRTUAL_ENV/#${HOME}/~}${txtrst}${bldblk})${txtrst}"
             fi
 
             echo
