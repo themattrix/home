@@ -8,6 +8,10 @@ case $- in
       *) return;;
 esac
 
+export LC_ALL=en_US.UTF-8
+export LANG=en_US.UTF-8
+export LANGUAGE=en_US.UTF-8
+
 function define_colors() {
     # https://wiki.archlinux.org/index.php/Color_Bash_Prompt#List_of_colors_for_prompt_and_Bash
     txtblk='\e[0;30m' # Black - Regular
