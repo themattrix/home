@@ -173,6 +173,8 @@ au BufRead,BufNewFile *.bats set filetype=sh
 au BufRead,BufNewFile *.ks let g:is_bash=1
 au BufRead,BufNewFile *.ks set filetype=sh
 
+au BufRead,BufNewFile .vim_plug set filetype=vim
+
 augroup vagrant
     au!
     au BufRead,BufNewFile Vagrantfile set filetype=ruby
