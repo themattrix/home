@@ -212,3 +212,9 @@ au BufRead * normal zR
 
 " Always show git gutter column
 let g:gitgutter_sign_column_always = 1
+
+" Gif config
+nmap s <Plug>(easymotion-s2)
+nmap t <Plug>(easymotion-t2)
+map  / <Plug>(easymotion-sn)
+omap / <Plug>(easymotion-tn)
