@@ -173,6 +173,8 @@ au BufRead,BufNewFile *.bats set filetype=sh
 au BufRead,BufNewFile *.ks let g:is_bash=1
 au BufRead,BufNewFile *.ks set filetype=sh
 
+au BufRead,BufNewFile .vim_plug set filetype=vim
+
 augroup vagrant
     au!
     au BufRead,BufNewFile Vagrantfile set filetype=ruby
@@ -210,3 +212,9 @@ au BufRead * normal zR
 
 " Always show git gutter column
 let g:gitgutter_sign_column_always = 1
+
+" Gif config
+nmap s <Plug>(easymotion-s2)
+nmap t <Plug>(easymotion-t2)
+map  / <Plug>(easymotion-sn)
+omap / <Plug>(easymotion-tn)

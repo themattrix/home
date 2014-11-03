@@ -1,0 +1,6 @@
+[push]
+	default = simple
+[core]
+	editor = vim
+[diff]
+	tool = vimdiff
