@@ -17,6 +17,7 @@ Plug 'bling/vim-airline'
 Plug 'klen/python-mode'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'airblade/vim-gitgutter'
+Plug 'wting/rust.vim'
 
 " Colors
 Plug 'flazz/vim-colorschemes'
