@@ -19,8 +19,8 @@ alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo
 alias c='clear'
 alias cls='clear; ls'
 alias tmux='TERM=screen-256color-bce tmux'
-
 alias ccat='pygmentize -g -O bg=dark'
+alias percol='percol --match-method regex'
 
 function cless() {
     pygmentize -g -O bg=dark "$@" | less -R
