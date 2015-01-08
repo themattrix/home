@@ -278,15 +278,7 @@ export HISTCONTROL=ignorespace   # leading space hides commands from history
 export HISTFILESIZE=10000        # increase history file size (default is 500)
 export HISTSIZE=${HISTFILESIZE}  # increase history size (default is 500)
 
-if which hh &> /dev/null; then
-    # get more colors
-    export HH_CONFIG=hicolor
-
-    # if this is interactive shell, then bind hh to Ctrl-r
-    if [[ $- =~ .*i.* ]]; then
-        bind '"\C-r": "\C-a hh \C-j"'
-    fi
-fi
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
 # Launch tmux automatically in new sessions
 # -> http://stackoverflow.com/a/11069117/27925
