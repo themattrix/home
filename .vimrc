@@ -218,3 +218,6 @@ nmap s <Plug>(easymotion-s2)
 nmap t <Plug>(easymotion-t2)
 map  / <Plug>(easymotion-sn)
 omap / <Plug>(easymotion-tn)
+
+" Disable preview in Python Mode
+set completeopt-=preview
