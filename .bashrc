@@ -261,6 +261,7 @@ if [ -f ~/.bash_aliases ]; then
 fi
 
 export PATH="${PATH}:${HOME}/bin"
+export PATH="${PATH}:/usr/local/go/bin"
 
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
