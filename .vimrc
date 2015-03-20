@@ -207,6 +207,9 @@ if $TERM =~ '^screen-256color'
     map! <Esc>OF <End>
 endif
 
+" Fix background color: http://superuser.com/a/562423
+set t_ut=
+
 " Expand all folds
 au BufRead * normal zR
 

@@ -82,7 +82,7 @@ function __define_prompt() {
             local status_color="${txtred}"
         fi
 
-        if [[ $TERM =~ screen ]]; then
+        if [[ $TERM =~ screen ]] || [ -n "${TMUX}" ]; then
             if which tmux &> /dev/null; then
                 if [ "${PWD}" == "${HOME}" ]; then
                     tmux rename-window "~"
@@ -283,14 +283,18 @@ export HISTSIZE=${HISTFILESIZE}  # increase history size (default is 500)
 
 # Launch tmux automatically in new sessions
 # -> http://stackoverflow.com/a/11069117/27925
-if [[ ! $TERM =~ screen ]] && [ -z "${TMUX}" ]; then
-    if /usr/bin/which tmux &> /dev/null; then
-        export TERM=screen-256color-bce
+if [[ ! $TERM =~ screen ]]; then
+    if [ -z "${TMUX}" ]; then
+        if /usr/bin/which tmux &> /dev/null; then
+            export TERM=screen-256color-bce
 
-        if tmux list-sessions &> /dev/null; then
-            exec tmux attach
-        else
-            exec tmux
+            if tmux list-sessions &> /dev/null; then
+                exec tmux attach
+            else
+                exec tmux
+            fi
         fi
+    else
+        export TERM=screen-256color-bce
     fi
 fi
