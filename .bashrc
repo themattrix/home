@@ -283,7 +283,7 @@ export HISTSIZE=${HISTFILESIZE}  # increase history size (default is 500)
 
 # Launch tmux automatically in new sessions
 # -> http://stackoverflow.com/a/11069117/27925
-if [[ ! $TERM =~ screen ]]; then
+if [[ ! $TERM =~ screen ]] && [ -z "${TMUX}" ]; then
     if /usr/bin/which tmux &> /dev/null; then
         export TERM=screen-256color-bce
 
