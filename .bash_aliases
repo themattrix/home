@@ -47,3 +47,7 @@ function docker() {
         "${REAL_DOCKER}" "$@"
     fi
 }
+
+function trim() {
+    expand | cut -c-$COLUMNS
+}
