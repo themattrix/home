@@ -275,6 +275,7 @@ if ! shopt -oq posix; then
 fi
 
 shopt -s histappend              # append new history items to .bash_history
+export HISTFILE=${HOME}/.bash_history/history
 export HISTCONTROL=ignorespace   # leading space hides commands from history
 export HISTFILESIZE=10000        # increase history file size (default is 500)
 export HISTSIZE=${HISTFILESIZE}  # increase history size (default is 500)
