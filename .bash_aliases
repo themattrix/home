@@ -21,6 +21,7 @@ alias cls='clear; ls'
 alias tmux='TERM=screen-256color-bce tmux'
 alias ccat='pygmentize -g -O bg=dark'
 alias percol='percol --match-method regex'
+alias copy='xclip -selection clipboard'
 
 function cless() {
     pygmentize -g -O bg=dark "$@" | less -R
