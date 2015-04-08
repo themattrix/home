@@ -32,8 +32,10 @@ REAL_DOCKER=$(which docker)
 # Provides a 'docker clean' command.
 function docker() {
     if [ "$1" == "clean" ]; then
-        local stopped_containers=$("${REAL_DOCKER}" ps -a | grep 'Exited' | awk '{print $1}')
-        local untagged_images=$("${REAL_DOCKER}" images | grep '^<none>' | awk '{print $3}')
+        local stopped_containers=$({
+            "${REAL_DOCKER}" ps -qa; "${REAL_DOCKER}" ps -q; } | sort | uniq -u)
+        local untagged_images=$(
+            "${REAL_DOCKER}" images | grep '^<none>' | awk '{print $3}')
 
         if [ -n "${stopped_containers}" ]; then
             echo ">>> Removing stopped containers..."
