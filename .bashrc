@@ -165,12 +165,12 @@ function __define_prompt() {
                     icon=" ${bldblk}[#]${txtrst}"
                 fi
 
-                echo -n " ${bldblk}(git ${__GIT_ROOT/#${HOME}/~}: ${txtrst}${txtgrn}${__GIT_BRANCH}${txtrst}${icon}${bldblk})${txtrst}"
+                echo -n " ${bldblk}(git ${__GIT_ROOT/#${HOME}/'~'}: ${txtrst}${txtgrn}${__GIT_BRANCH}${txtrst}${icon}${bldblk})${txtrst}"
             fi
 
             if [ -n "${VIRTUAL_ENV}" ]; then
                 # Looks like we are in a Python virtual environment
-                echo -n " ${bldblk}(py: ${txtrst}${txtgrn}${VIRTUAL_ENV/#${HOME}/~}${txtrst}${bldblk})${txtrst}"
+                echo -n " ${bldblk}(py: ${txtrst}${txtgrn}${VIRTUAL_ENV/#${HOME}/'~'}${txtrst}${bldblk})${txtrst}"
             fi
 
             echo
