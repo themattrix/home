@@ -23,6 +23,9 @@ alias ccat='pygmentize -g -O bg=dark'
 alias percol='percol --match-method regex'
 alias copy='xclip -selection clipboard'
 
+# https://github.com/nvbn/thefuck
+alias fuck='eval $(thefuck $(fc -ln -1)); history -r'
+
 function cless() {
     pygmentize -g -O bg=dark "$@" | less -R
 }
